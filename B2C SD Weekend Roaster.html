@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B2C SD Weekend Roaster</title>
+  <style>
+    :root {
+      --bg1: #11131a;
+      --bg2: #1c2232;
+      --panel: rgba(255,255,255,0.06);
+      --panel-strong: rgba(255,255,255,0.12);
+      --accent: #f8b233;
+      --accent2: #6b5bff;
+      --text: #f3f4ff;
+      --muted: #a5b0d3;
+      --border: rgba(255,255,255,0.08);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, rgba(106, 83, 255, 0.18), transparent 32%),
+                  radial-gradient(circle at 20% 30%, rgba(255, 176, 59, 0.18), transparent 20%),
+                  linear-gradient(180deg, #0b0f18 0%, #131924 45%, #090c13 100%);
+      color: var(--text);
+    }
+
+    .page-shell {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    header.topbar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 28px;
+      padding: 18px 24px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .brand .mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #8f7cff, #ff9f45);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      color: #111;
+    }
+
+    .title-block {
+      text-align: center;
+      min-width: 0;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: clamp(2rem, 2.7vw, 3.15rem);
+      letter-spacing: 0.03em;
+      line-height: 1.05;
+    }
+
+    .page-subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .controls select,
+    .controls button {
+      min-width: 132px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(21, 26, 45, 0.88);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .controls button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+    }
+
+    .row-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .row-actions p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .person-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      width: min(100%, 520px);
+    }
+
+    .person-form input {
+      width: 100%;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      padding: 14px 16px;
+      font-size: 0.95rem;
+    }
+
+    .person-form button {
+      background: linear-gradient(135deg, #ff9f45, #8f7cff);
+      border-color: transparent;
+      color: #111;
+      font-weight: 700;
+    }
+
+    .nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .nav-row h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .scroll-buttons {
+      display: inline-flex;
+      gap: 10px;
+    }
+
+    .scroll-buttons button {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+
+    .table-wrap {
+      overflow-x: hidden;
+      position: relative;
+      padding-bottom: 16px;
+    }
+
+    .week-table {
+      min-width: 1800px;
+      border-collapse: collapse;
+      width: 100%;
+      margin: 0;
+    }
+
+    .week-table thead tr {
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .week-table th,
+    .week-table td {
+      padding: 12px 10px;
+      text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      white-space: nowrap;
+      font-size: 0.92rem;
+    }
+
+    .week-table th.name,
+    .week-table td.name {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      text-align: left;
+      background: rgba(10, 13, 24, 0.96);
+      border-right: 1px solid rgba(255,255,255,0.12);
+      min-width: 220px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .week-table th.week {
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .week-table td {
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 160ms ease, transform 160ms ease;
+    }
+
+    .week-table td:hover {
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-1px);
+    }
+
+    .week-table td.disabled {
+      cursor: default;
+      opacity: 1;
+      background: rgba(21, 26, 45, 0.25);
+    }
+
+    .week-table td.disabled:hover {
+      transform: none;
+      background: rgba(21, 26, 45, 0.25);
+    }
+
+    .week-table td.active {
+      background: linear-gradient(135deg, rgba(248,178,51,0.18), rgba(139, 95, 255,0.22));
+    }
+
+    .week-table td.active::after {
+      content: "✓";
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(248,178,51,0.98);
+      color: #111;
+      font-weight: 700;
+    }
+
+    .week-table th.current-week,
+    .week-table td.current-week,
+    .week-table td.name.current-week {
+      box-shadow: inset 0 0 0 2px rgba(255,210,110,0.9);
+      background: rgba(255,237,180,0.18);
+    }
+
+    .week-table th.month-highlight,
+    .week-table td.month-highlight {
+      background: rgba(100, 143, 255, 0.14);
+      box-shadow: inset 0 0 0 1px rgba(100, 143, 255, 0.4);
+    }
+
+    .week-table td.disabled {
+      cursor: default;
+      opacity: 0.35;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .footer-note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 1024px) {
+      .week-table {
+        min-width: 1400px;
+      }
+    }
+
+    @media (max-width: 880px) {
+      .topbar {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .controls {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .week-table {
+        min-width: 1300px;
+      }
+
+      .week-table th,
+      .week-table td {
+        padding: 10px 8px;
+      }
+
+      .person-form {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">Z</div>
+        <div>Zuku Technical SD</div>
+      </div>
+      <div class="title-block">
+        <h1 class="page-title">B2C SD Weekend Roaster</h1>
+        <p class="page-subtitle">Week-by-week duty assignment with weekend dates and quick navigation.</p>
+      </div>
+      <div class="controls">
+        <select id="yearSelect" aria-label="Select year"></select>
+        <button id="currentWeekBtn" type="button">Current Week</button>
+        <select id="viewModeSelect" aria-label="View mode">
+          <option value="year">Full Year</option>
+          <option value="week">Current Week</option>
+          <option value="month">Current Month</option>
+        </select>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="row-actions">
+        <p>Use the left/right arrows to scroll the roster horizontally when the window is narrow. Existing duty ticks are locked and cannot be modified. Add a new person and their assigned ticks will populate automatically.</p>
+        <form id="addPersonForm" class="person-form">
+          <input id="personName" type="text" placeholder="Add a new person" aria-label="Add a new person" required />
+          <button type="submit">Add</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="nav-row">
+        <h2 id="rosterHeader">Weekend roster overview</h2>
+        <div class="scroll-buttons">
+          <button id="scrollLeft" type="button" aria-label="Scroll left">◀</button>
+          <button id="scrollRight" type="button" aria-label="Scroll right">▶</button>
+        </div>
+      </div>
+
+      <div class="table-wrap" id="tableWrap">
+        <table class="week-table" id="weekTable">
+          <thead>
+            <tr id="weekHeaderRow">
+              <th class="name">Name</th>
+            </tr>
+          </thead>
+          <tbody id="personBody"></tbody>
+        </table>
+      </div>
+      <p class="footer-note">Weekend dates are calculated using ISO week numbering. Use the year selector to switch calendar years.</p>
+    </section>
+  </div>
+
+  <script>
+    const basePeople = [
+      'Baraka Laizer',
+      'Paschal Nade',
+      'Ngoyi Ramadhani',
+      'Flkiri Feedinandi',
+      'Salehe Said',
+      'Yillande Bantu'
+    ];
+
+    const dutyRotation = [
+      'Baraka Laizer',
+      'Paschal Nade',
+      'Ngoyi Ramadhani',
+      'Flkiri Feedinandi',
+      'Salehe Said',
+      'Baraka Laizer',
+      'Yillande Bantu',
+      'Paschal Nade',
+      'Ngoyi Ramadhani',
+      'Flkiri Feedinandi',
+      'Salehe Said',
+    ];
+
+    const tickAssignments = {};
+
+    let names = [...basePeople];
+
+    const yearSelect = document.getElementById('yearSelect');
+    const weekHeaderRow = document.getElementById('weekHeaderRow');
+    const personBody = document.getElementById('personBody');
+    const addPersonForm = document.getElementById('addPersonForm');
+    const personNameInput = document.getElementById('personName');
+    const weekTable = document.getElementById('weekTable');
+    const tableWrap = document.getElementById('tableWrap');
+    const scrollLeft = document.getElementById('scrollLeft');
+    const scrollRight = document.getElementById('scrollRight');
+    const rosterHeader = document.getElementById('rosterHeader');
+    const currentWeekBtn = document.getElementById('currentWeekBtn');
+    const viewModeSelect = document.getElementById('viewModeSelect');
+    let viewMode = 'year';
+
+    const years = [2024, 2025, 2026, 2027, 2028];
+    let selectedYear = new Date().getFullYear();
+    if (!years.includes(selectedYear)) selectedYear = years[0];
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentWeek = getCurrentISOWeek(today);
+
+    function getDateOfISOWeek(week, year) {
+      const simple = new Date(Date.UTC(year, 0, 4));
+      const dayOfWeek = simple.getUTCDay() || 7;
+      const isoWeek1Monday = new Date(simple);
+      isoWeek1Monday.setUTCDate(simple.getUTCDate() - dayOfWeek + 1);
+      const weekStart = new Date(isoWeek1Monday);
+      weekStart.setUTCDate(isoWeek1Monday.getUTCDate() + (week - 1) * 7);
+      const saturday = new Date(weekStart);
+      saturday.setUTCDate(weekStart.getUTCDate() + 5);
+      const sunday = new Date(weekStart);
+      sunday.setUTCDate(weekStart.getUTCDate() + 6);
+      return { saturday, sunday };
+    }
+
+    function getCurrentISOWeek(date) {
+      const target = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNumber = (target.getUTCDay() + 6) % 7;
+      target.setUTCDate(target.getUTCDate() - dayNumber + 3);
+      const firstThursday = new Date(Date.UTC(target.getUTCFullYear(), 0, 4));
+      const diff = target - firstThursday;
+      return 1 + Math.round(diff / 86400000 / 7);
+    }
+
+    function formatWeekend(week, year) {
+      const { saturday, sunday } = getDateOfISOWeek(week, year);
+      const options = { month: 'short', day: 'numeric' };
+      const satText = saturday.toLocaleDateString('en-US', options);
+      const sunText = sunday.toLocaleDateString('en-US', options);
+      return `W${week} · ${satText}–${sunText}`;
+    }
+
+    function createWeekHeaders(year) {
+      weekHeaderRow.innerHTML = '<th class="name">Name</th>';
+      for (let week = 1; week <= 52; week += 1) {
+        const th = document.createElement('th');
+        th.className = 'week';
+        th.innerHTML = formatWeekend(week, year);
+        weekHeaderRow.appendChild(th);
+      }
+    }
+
+    function createPersonRow(person) {
+      const tr = document.createElement('tr');
+      const nameCell = document.createElement('td');
+      nameCell.className = 'name';
+      nameCell.textContent = person;
+      tr.appendChild(nameCell);
+
+      for (let week = 1; week <= 52; week += 1) {
+        const cell = document.createElement('td');
+        cell.dataset.person = person;
+        cell.dataset.week = week;
+        cell.title = `Weekend ${week} for ${person}`;
+        cell.classList.add('disabled');
+        tr.appendChild(cell);
+      }
+      return tr;
+    }
+
+    function renderRoster(year) {
+      rosterHeader.textContent = `Weekend roster overview · ${year}`;
+      createWeekHeaders(year);
+      personBody.innerHTML = '';
+      names.forEach(name => {
+        personBody.appendChild(createPersonRow(name));
+      });
+      applyTickAssignments();
+      applyViewMode(year);
+    }
+
+    function highlightCurrentWeek(year) {
+      document.querySelectorAll('.week-table th.current-week, .week-table td.current-week').forEach(el => {
+        el.classList.remove('current-week');
+      });
+
+      if (year !== currentYear || currentWeek < 1 || currentWeek > 52) return;
+
+      const header = weekHeaderRow.querySelectorAll('th')[currentWeek];
+      if (header) {
+        header.classList.add('current-week');
+        const targetLeft = header.offsetLeft + header.offsetWidth / 2 - tableWrap.clientWidth / 2;
+        tableWrap.scrollTo({ left: Math.max(targetLeft, 0), behavior: 'smooth' });
+      }
+
+      personBody.querySelectorAll(`td[data-week="${currentWeek}"]`).forEach(td => {
+        td.classList.add('current-week');
+      });
+
+      const activeRow = personBody.querySelector(`td.active[data-week="${currentWeek}"]`);
+      if (activeRow) {
+        const row = activeRow.parentElement;
+        const nameCell = row.querySelector('td.name');
+        if (nameCell) nameCell.classList.add('current-week');
+      }
+    }
+
+    function applyViewMode(year) {
+      document.querySelectorAll('.week-table th.month-highlight, .week-table td.month-highlight').forEach(el => {
+        el.classList.remove('month-highlight');
+      });
+
+      if (viewMode === 'week') {
+        highlightCurrentWeek(year);
+        return;
+      }
+
+      if (viewMode === 'month' && year === currentYear) {
+        const month = today.getUTCMonth();
+        for (let week = 1; week <= 52; week += 1) {
+          const { saturday, sunday } = getDateOfISOWeek(week, year);
+          if (saturday.getUTCMonth() === month || sunday.getUTCMonth() === month) {
+            const header = weekHeaderRow.querySelectorAll('th')[week];
+            if (header) header.classList.add('month-highlight');
+            personBody.querySelectorAll(`td[data-week="${week}"]`).forEach(td => {
+              td.classList.add('month-highlight');
+            });
+          }
+        }
+        highlightCurrentWeek(year);
+        return;
+      }
+
+      if (viewMode === 'year') {
+        highlightCurrentWeek(year);
+      }
+    }
+
+    function populateYearSelector() {
+      yearSelect.innerHTML = '';
+      years.forEach((year) => {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        if (year === selectedYear) option.selected = true;
+        yearSelect.appendChild(option);
+      });
+    }
+
+    currentWeekBtn.addEventListener('click', () => {
+      if (years.includes(currentYear)) {
+        selectedYear = currentYear;
+        yearSelect.value = currentYear;
+      }
+      viewMode = 'week';
+      viewModeSelect.value = 'week';
+      renderRoster(selectedYear);
+    });
+
+    viewModeSelect.addEventListener('change', (event) => {
+      viewMode = event.target.value;
+      renderRoster(selectedYear);
+    });
+
+    function applyTickAssignments() {
+      const allCells = personBody.querySelectorAll('td');
+      allCells.forEach(cell => cell.classList.remove('active'));
+
+      for (let week = 1; week <= 52; week += 1) {
+        const rotationIndex = ((week - 9) % dutyRotation.length + dutyRotation.length) % dutyRotation.length;
+        const assignedPerson = dutyRotation[rotationIndex];
+        const cell = personBody.querySelector(`td[data-person="${assignedPerson}"][data-week="${week}"]`);
+        if (cell) cell.classList.add('active');
+      }
+
+      Object.keys(tickAssignments).forEach(person => {
+        const weeks = tickAssignments[person] || [];
+        weeks.forEach(week => {
+          const cell = personBody.querySelector(`td[data-person="${person}"][data-week="${week}"]`);
+          if (cell) cell.classList.add('active');
+        });
+      });
+    }
+
+    function addPerson(name) {
+      if (!name.trim()) return;
+      const person = name.trim();
+      if (!names.includes(person)) {
+        names.push(person);
+      }
+      if (!tickAssignments[person]) {
+        tickAssignments[person] = [1, 5, 9];
+      }
+      renderRoster(selectedYear);
+      personNameInput.value = '';
+      personNameInput.focus();
+    }
+
+    addPersonForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      addPerson(personNameInput.value);
+    });
+
+    yearSelect.addEventListener('change', (event) => {
+      selectedYear = Number(event.target.value);
+      renderRoster(selectedYear);
+      tableWrap.scrollLeft = 0;
+    });
+
+    scrollLeft.addEventListener('click', () => {
+      tableWrap.scrollBy({ left: -520, behavior: 'smooth' });
+    });
+
+    scrollRight.addEventListener('click', () => {
+      tableWrap.scrollBy({ left: 520, behavior: 'smooth' });
+    });
+
+    function updateArrowVisibility() {
+      const overflow = tableWrap.scrollWidth > tableWrap.clientWidth + 8;
+      scrollLeft.style.display = overflow ? 'inline-flex' : 'none';
+      scrollRight.style.display = overflow ? 'inline-flex' : 'none';
+    }
+
+    window.addEventListener('resize', updateArrowVisibility);
+    window.addEventListener('load', () => {
+      populateYearSelector();
+      renderRoster(selectedYear);
+      updateArrowVisibility();
+    });
+  </script>
+</body>
+</html>
